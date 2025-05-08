@@ -13,15 +13,14 @@ services:
     networks:
       net:
 
-  thera-ws-proxy:
+  thera-app-ws-proxy:
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    container_name: thera-ws-proxy
+    container_name: thera-app-ws-proxy
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
       args:
-        PORT: 8080
         TIMEZONE: ${TIMEZONE}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
@@ -31,10 +30,11 @@ services:
     networks:
       net:
 
-  thera-app-backend:
+  thera-app-node-cli:
     volumes:
-      - ./api:/app
-    container_name: thera-app-backend
+      - ./api:/backend
+      - ./app:/frontend
+    container_name: thera-app-node-cli
     build:
       context: .
       dockerfile: ./docker/nest/Dockerfile
@@ -47,9 +47,27 @@ services:
     networks:
       net:
 
+  thera-app-backend:
+    volumes:
+      - ./api:/api
+    container_name: thera-app-backend
+    build:
+      context: .
+      dockerfile: ./docker/nest/Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        DB_PORT: ${DB_PORT}
+        DB_HOST: thera-app-db
+        DB_USER: root
+    depends_on:
+      - "thera-app-db"
+    networks:
+      net:
+
   thera-app-frontend:
     volumes:
-      - ./frontend:/app
+      - ./app:/app
     container_name: thera-app-frontend
     build:
       context: .
@@ -70,4 +88,4 @@ networks:
 
 volumes:
   mysql:
-    name: thera-mysql-data
+    name: thera-app-mysql-data
