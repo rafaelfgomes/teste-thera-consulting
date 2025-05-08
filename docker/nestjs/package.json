@@ -1,3 +1,0 @@
-"scripts": {
-  "start:dev": "nest start --watch"
-}

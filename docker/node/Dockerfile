@@ -8,16 +8,20 @@ RUN apk --no-cache update && apk add --no-cache shadow sudo
 
 RUN groupadd -g ${GID} container
 
-RUN echo "admin ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/admin && chmod 0440 /etc/sudoers.d/admin
+RUN echo "node ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/admin && chmod 0440 /etc/sudoers.d/admin
 
 RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 
-WORKDIR /app
-
-RUN chown -R node:container .
-
-COPY package*.json ./
+RUN usermod -aG container node
 
 USER node
 
-CMD ["tail", "-f", "/dev/null"]
+RUN npm install --save-dev @nestjs/cli nodemon
+
+WORKDIR /home/node
+
+COPY ./docker/node/init.sh ./
+
+RUN sudo chmod +x init.sh
+
+CMD ["sh", "-c", "/home/node/init.sh"]

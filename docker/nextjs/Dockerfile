@@ -1,39 +1,31 @@
-ARG DB_NAME
-ARG DB_ROOT_PASSWORD
-ARG DB_PORT
-ARG DB_HOST
-ARG DB_USER
-
-FROM node:lts-alpine as dev-env
-
-ENV DATABASE_HOST=${DB_HOST}
-ENV DATABASE_PORT=${DB_PORT}
-ENV DATABASE_USER=${DB_USER}
-ENV DATABASE_PASSWORD=${DB_ROOT_PASSWORD}
-ENV DATABASE_NAME=${DB_NAME}
-
-WORKDIR /app
-
-COPY ./docker/nextjs/package*.json ./
-
-RUN npm install
-
-RUN npm run build
-
 FROM node:lts-alpine
 
-ENV DATABASE_HOST=${DB_HOST}
-ENV DATABASE_PORT=${DB_PORT}
-ENV DATABASE_USER=${DB_USER}
-ENV DATABASE_PASSWORD=${DB_ROOT_PASSWORD}
-ENV DATABASE_NAME=${DB_NAME}
+ARG NEXT_PUBLIC_API_URL
+
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+ARG UID
+ARG GID
+ARG TIMEZONE
+
+RUN apk --no-cache update && apk add --no-cache shadow sudo
+
+RUN groupadd -g ${GID} container
+
+RUN echo "node ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/admin && chmod 0440 /etc/sudoers.d/admin
+
+RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+
+RUN usermod -aG container node
+
+WORKDIR /scripts
+
+COPY ./docker/nextjs/init.sh ./
+
+RUN chmod +x init.sh
 
 WORKDIR /app
 
-COPY ./docker/nextjs/package*.json ./
+USER node
 
-RUN npm install --only=production
-
-COPY --from=dev-env /app/dist ./dist
-
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "/scripts/init.sh"]

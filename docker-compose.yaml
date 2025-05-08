@@ -13,6 +13,55 @@ services:
     networks:
       net:
 
+  thera-app-node-cli:
+    volumes:
+      - ./backend:/api
+      - ./frontend:/app
+    container_name: thera-app-node-cli
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        TIMEZONE: ${TIMEZONE}
+    depends_on:
+      - "thera-app-db"
+    networks:
+      net:
+
+  thera-app-backend:
+    volumes:
+      - ./backend:/api
+    container_name: thera-app-backend
+    build:
+      context: .
+      dockerfile: ./docker/nestjs/Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        DB_PORT: ${DB_PORT}
+        DB_HOST: thera-app-db
+        DB_USER: root
+    depends_on:
+      - "thera-app-node-cli"
+    networks:
+      net:
+
+  thera-app-frontend:
+    volumes:
+      - ./frontend:/app
+    container_name: thera-app-frontend
+    build:
+      context: .
+      dockerfile: ./docker/nextjs/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8080}/api
+    depends_on:
+      - "thera-app-backend"
+    networks:
+      net:
+
   thera-app-ws-proxy:
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -27,57 +76,6 @@ services:
     depends_on:
       - thera-app-backend
       - thera-app-frontend
-    networks:
-      net:
-
-  thera-app-node-cli:
-    volumes:
-      - ./api:/backend
-      - ./app:/frontend
-    container_name: thera-app-node-cli
-    build:
-      context: .
-      dockerfile: ./docker/nest/Dockerfile
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        TIMEZONE: ${TIMEZONE}
-    depends_on:
-      - "thera-app-db"
-    networks:
-      net:
-
-  thera-app-backend:
-    volumes:
-      - ./api:/api
-    container_name: thera-app-backend
-    build:
-      context: .
-      dockerfile: ./docker/nest/Dockerfile
-      args:
-        DB_NAME: ${DB_NAME}
-        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-        DB_PORT: ${DB_PORT}
-        DB_HOST: thera-app-db
-        DB_USER: root
-    depends_on:
-      - "thera-app-db"
-    networks:
-      net:
-
-  thera-app-frontend:
-    volumes:
-      - ./app:/app
-    container_name: thera-app-frontend
-    build:
-      context: .
-      dockerfile: ./docker/next/Dockerfile
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        TIMEZONE: ${TIMEZONE}
-    depends_on:
-      - "thera-app-backend"
     networks:
       net:
 
