@@ -1,12 +1,11 @@
 FROM node:lts-alpine
 
-ARG NEXT_PUBLIC_API_URL
-
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
 ARG UID
 ARG GID
 ARG TIMEZONE
+ARG NEXT_PUBLIC_API_URL
+
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 RUN apk --no-cache update && apk add --no-cache shadow sudo
 

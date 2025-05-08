@@ -14,9 +14,9 @@ RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 
 RUN usermod -aG container node
 
-USER node
+RUN npm install --save-dev -g @nestjs/cli nodemon
 
-RUN npm install --save-dev @nestjs/cli nodemon
+USER node
 
 WORKDIR /home/node
 
