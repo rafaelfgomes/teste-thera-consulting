@@ -10,8 +10,8 @@ import { OrderItemsModule } from './order-items/order-items.module';
 
 @Module({
   imports: [
-    ProductsModule,
     TypeOrmModule.forRoot(OrmConfig),
+    ProductsModule,
     CategoriesModule,
     OrdersModule,
     OrderItemsModule,
