@@ -22,9 +22,6 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ type: 'varchar', length: 140 })
-  imageUrl: string;
-
   @Column({ type: 'int' })
   quantity: number;
 

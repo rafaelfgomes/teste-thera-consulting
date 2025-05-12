@@ -3,7 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
@@ -22,6 +22,12 @@ export class CategoriesService {
 
   findOne(id: number) {
     return this.categoryRepository.findOne({ where: { id } });
+  }
+
+  getCategoryByName(name: string) {
+    return this.categoryRepository.findOne({
+      where: { name: ILike(`%${name}%`) },
+    });
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {

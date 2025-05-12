@@ -9,6 +9,13 @@ export class Order {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
+  @Column({
+    type: 'varchar',
+    length: 20,
+    enum: ['pending', 'completed', 'canceled'],
+  })
+  status: string;
+
   @Column({ type: 'datetime' })
   created_at: Date;
 

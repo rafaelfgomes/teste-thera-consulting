@@ -30,6 +30,11 @@ export class CategoriesController {
     return this.categoriesService.findOne(+id);
   }
 
+  @Get('/by-name/:name')
+  getCategoryByName(@Param('name') name: string) {
+    return this.categoriesService.getCategoryByName(name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

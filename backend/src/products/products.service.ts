@@ -12,23 +12,27 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  create(createProductDto: CreateProductDto) {
+  createNewProduct(createProductDto: CreateProductDto) {
     return this.productRepository.save(createProductDto);
   }
 
-  findAll() {
+  getAllUsers() {
     return this.productRepository.find();
   }
 
-  findOne(id: number) {
+  getProductById(id: number) {
     return this.productRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  getProductByName(name: string) {
+    return this.productRepository.findOne({ where: { name } });
+  }
+
+  updateProduct(id: number, updateProductDto: UpdateProductDto) {
     return this.productRepository.update(id, updateProductDto);
   }
 
-  remove(id: number) {
+  deleteProduct(id: number) {
     return this.productRepository.delete(id);
   }
 }
