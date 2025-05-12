@@ -16,13 +16,13 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  createProduct(@Body() createProductDto: CreateProductDto) {
+  createNewProduct(@Body() createProductDto: CreateProductDto) {
     return this.productsService.createNewProduct(createProductDto);
   }
 
   @Get()
-  getAllUsers() {
-    return this.productsService.getAllUsers();
+  getAllProducts() {
+    return this.productsService.getAllProducts();
   }
 
   @Get(':id')

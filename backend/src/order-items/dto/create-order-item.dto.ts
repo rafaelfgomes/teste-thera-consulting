@@ -5,11 +5,6 @@ export class CreateOrderItemDto {
   @Expose()
   @IsInt()
   @IsNotEmpty()
-  id: number;
-
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
   quantity: number;
 
   @Expose()
@@ -23,18 +18,14 @@ export class CreateOrderItemDto {
   created_at: Date;
 
   @Expose()
-  @IsDateString()
-  updated_at: Date;
+  @IsInt()
+  @IsNotEmpty()
+  productId: number;
 
   @Expose()
   @IsInt()
   @IsNotEmpty()
-  product_id: number;
-
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  order_id: number;
+  orderId: number;
 
   @Expose()
   @Transform(

@@ -25,6 +25,9 @@ export class Product {
   @Column({ type: 'int' })
   quantity: number;
 
+  @Column({ type: 'boolean' })
+  active: boolean;
+
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 

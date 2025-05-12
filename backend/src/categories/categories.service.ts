@@ -12,15 +12,15 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  create(createCategoryDto: CreateCategoryDto) {
+  createNewCategory(createCategoryDto: CreateCategoryDto) {
     return this.categoryRepository.save(createCategoryDto);
   }
 
-  findAll() {
+  getAllCategories() {
     return this.categoryRepository.find();
   }
 
-  findOne(id: number) {
+  getCategoryById(id: number) {
     return this.categoryRepository.findOne({ where: { id } });
   }
 
@@ -30,11 +30,11 @@ export class CategoriesService {
     });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
     return this.categoryRepository.update(id, updateCategoryDto);
   }
 
-  remove(id: number) {
+  removeCategory(id: number) {
     return this.categoryRepository.delete(id);
   }
 }

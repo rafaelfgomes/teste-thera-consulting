@@ -16,18 +16,18 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  createNewCategory(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoriesService.createNewCategory(createCategoryDto);
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  getAllCategories() {
+    return this.categoriesService.getAllCategories();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  getCategoryById(@Param('id') id: string) {
+    return this.categoriesService.getCategoryById(+id);
   }
 
   @Get('/by-name/:name')
@@ -36,15 +36,15 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  update(
+  updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
+    return this.categoriesService.updateCategory(+id, updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  removeCategory(@Param('id') id: string) {
+    return this.categoriesService.removeCategory(+id);
   }
 }

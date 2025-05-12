@@ -16,7 +16,7 @@ export class ProductsService {
     return this.productRepository.save(createProductDto);
   }
 
-  getAllUsers() {
+  getAllProducts() {
     return this.productRepository.find();
   }
 
