@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsDecimal, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsDecimal,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
