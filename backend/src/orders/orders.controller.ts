@@ -8,16 +8,16 @@ export class OrdersController {
 
   @Post()
   createNewOrder(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+    return this.ordersService.createNewOrder(createOrderDto);
   }
 
   @Get()
   getAllOrders() {
-    return this.ordersService.findAll();
+    return this.ordersService.getAllOrders();
   }
 
   @Get(':id')
   getOrderById(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+    return this.ordersService.getOrderById(+id);
   }
 }
