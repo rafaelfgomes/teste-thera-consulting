@@ -1,8 +1,8 @@
 services:
-  thera-app-db:
+  db:
     volumes:
       - mysql:/var/lib/mysql
-    container_name: thera-app-db
+    container_name: db
     image: mysql
     restart: always
     environment:
@@ -14,11 +14,12 @@ services:
     networks:
       net:
 
-  thera-app-node-cli:
+  node:
     volumes:
-      - ./backend:/api
-      - ./frontend:/app
-    container_name: thera-app-node-cli
+      - ./api:/api
+      - ./frontend/site:/app
+      - ./frontend/admin:/admin
+    container_name: node-cli
     build:
       context: .
       dockerfile: ./docker/node/Dockerfile
@@ -27,47 +28,72 @@ services:
         GID: ${GID}
         TIMEZONE: ${TIMEZONE}
     depends_on:
-      - "thera-app-db"
+      - "db"
     networks:
       net:
 
-  thera-app-backend:
+  api:
     volumes:
-      - ./backend:/api
-    container_name: thera-app-backend
+      - ./api:/api
+    container_name: api
     build:
       context: .
-      dockerfile: ./docker/nestjs/Dockerfile
+      dockerfile: ./docker/api/Dockerfile
       args:
         UID: ${UID}
         GID: ${GID}
         TIMEZONE: ${TIMEZONE}
+    environment:
+      - DB_HOST=db
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USER=${DB_ROOT_USER}
+      - DB_PASSWORD=${DB_ROOT_PASSWORD}
+      - DB_NAME=${DB_NAME}
     depends_on:
-      - "thera-app-node-cli"
+      - "node"
     networks:
       net:
 
-  thera-app-frontend:
+  admin:
     volumes:
-      - ./frontend:/app
-    container_name: thera-app-frontend
+      - ./frontend/admin:/app
+    container_name: admin
     build:
       context: .
-      dockerfile: ./docker/nextjs/Dockerfile
+      dockerfile: ./docker/admin/Dockerfile
       args:
         UID: ${UID}
         GID: ${GID}
         TIMEZONE: ${TIMEZONE}
-        NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8080}/api
+    environment:
+      NEXT_PUBLIC_API_URL: http://127.0.0.1:${BACKEND_PORT:-8080}/api
     depends_on:
-      - "thera-app-backend"
+      - "api"
     networks:
       net:
 
-  thera-app-ws-proxy:
+  site:
+    volumes:
+      - ./frontend/site:/app
+    container_name: site
+    build:
+      context: .
+      dockerfile: ./docker/site/Dockerfile
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        TIMEZONE: ${TIMEZONE}
+    environment:
+      NEXT_PUBLIC_API_URL: http://127.0.0.1:${BACKEND_PORT:-8080}/api
+    depends_on:
+      - "api"
+    networks:
+      net:
+
+  proxy:
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    container_name: thera-app-ws-proxy
+    container_name: proxy
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
@@ -76,16 +102,17 @@ services:
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     depends_on:
-      - thera-app-backend
-      - thera-app-frontend
+      - api
+      - site
+      - admin
     networks:
       net:
 
 networks:
   net:
-    name: thera-app-network
+    name: app-network
     external: false
 
 volumes:
   mysql:
-    name: thera-app-mysql-data
+    name: mysql-data
