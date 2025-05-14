@@ -1,6 +1,5 @@
 FROM node:lts-alpine
 
-ARG UID
 ARG GID
 ARG TIMEZONE
 
@@ -20,7 +19,7 @@ COPY ./docker/admin/init.sh ./
 
 RUN chmod +x init.sh
 
-WORKDIR /app
+WORKDIR /admin
 
 USER node
 

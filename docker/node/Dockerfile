@@ -1,6 +1,5 @@
 FROM node:lts-alpine
 
-ARG UID
 ARG GID
 ARG TIMEZONE
 

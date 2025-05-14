@@ -1,10 +1,11 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as mysql2 from 'mysql2';
+import { DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-export const OrmConfig: TypeOrmModuleOptions = {
-  type: 'mysql',
-  host: process.env.DB_HOST || '127.0.0.1',
+const commonConfig = {
+  type: 'mysql' as const,
+  host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '3306', 10),
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -13,6 +14,14 @@ export const OrmConfig: TypeOrmModuleOptions = {
   logging: process.env.NODE_ENV === 'development',
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   driver: mysql2,
-  autoLoadEntities: true,
   namingStrategy: new SnakeNamingStrategy(),
+};
+
+export const OrmConfig: TypeOrmModuleOptions = {
+  ...commonConfig,
+  autoLoadEntities: true,
+};
+
+export const AppDataSourceOptions: DataSourceOptions = {
+  ...commonConfig,
 };
