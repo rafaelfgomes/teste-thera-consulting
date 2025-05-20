@@ -1,33 +1,39 @@
-import { Expose, Transform } from 'class-transformer';
-import { IsDateString, IsDecimal, IsInt, IsNotEmpty } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsDateString,
+  IsDecimal,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  Min,
+} from 'class-validator';
 
 export class CreateOrderItemDto {
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   quantity: number;
 
-  @Expose()
+  @IsNumber()
   @IsDecimal({ decimal_digits: '2' })
   @Transform(({ value }) => Number(value).toFixed(2))
+  @Min(0)
   price: number;
 
-  @Expose()
-  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  product_id: number;
+
+  @IsNumber()
+  @IsPositive()
+  order_id: number;
+
   @IsDateString()
   created_at: Date;
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  productId: number;
+  @IsOptional()
+  @IsDateString()
+  updated_at: Date;
 
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  orderId: number;
-
-  @Expose()
   @Transform(
     ({ obj }: { obj: CreateOrderItemDto }) =>
       Number(obj.quantity) * Number(obj.price),

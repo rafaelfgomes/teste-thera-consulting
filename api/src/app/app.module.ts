@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from '../app.service';
+import { AppService } from './app.service';
 import { ProductsModule } from '../products/products.module';
 import { OrmConfig } from '../database/ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';

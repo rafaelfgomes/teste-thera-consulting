@@ -18,7 +18,7 @@ export class Category {
   @Column({ type: 'boolean', default: true })
   active: boolean;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   created_at: Date;
 
   @OneToMany(() => Product, (product) => product.category)

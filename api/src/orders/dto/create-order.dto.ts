@@ -1,8 +1,10 @@
+import { OrderStatus } from '../../enums/orderstatus';
 import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
   IsDecimal,
+  IsEnum,
   IsNumber,
   IsOptional,
   ValidateNested,
@@ -22,6 +24,9 @@ export class OrderItemDto {
 export class CreateOrderDto {
   @IsDecimal({ decimal_digits: '2' })
   price: number;
+
+  @IsEnum(['pending', 'completed', 'canceled'])
+  status: OrderStatus;
 
   @IsArray()
   @ValidateNested({ each: true })

@@ -19,7 +19,7 @@ export class User {
   @Column({ type: 'varchar', length: 130 })
   password: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   created_at: Date;
 
   @Column({ type: 'boolean', default: true })

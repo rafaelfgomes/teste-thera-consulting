@@ -5,12 +5,14 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
+  MaxLength,
   Min,
 } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(80)
   name: string;
 
   @IsString()

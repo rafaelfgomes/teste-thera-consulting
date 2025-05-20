@@ -11,8 +11,17 @@ export class OrderItemsService {
     private readonly orderItemsRepository: Repository<OrderItem>,
   ) {}
 
-  create(createOrderItemDto: CreateOrderItemDto) {
-    return this.orderItemsRepository.save(createOrderItemDto);
+  async create(createOrderItemDto: CreateOrderItemDto) {
+    const orderItem = {
+      quantity: createOrderItemDto.quantity,
+      price: createOrderItemDto.price,
+      order: { id: createOrderItemDto.order_id },
+      product: { id: createOrderItemDto.product_id },
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+
+    return this.orderItemsRepository.save(orderItem);
   }
 
   getAllOrderItems() {

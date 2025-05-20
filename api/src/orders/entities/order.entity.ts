@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderItem } from '../../order-items/entities/order-item.entity';
+import { OrderStatus } from '../../enums/orderstatus';
 
 @Entity('orders')
 export class Order {
@@ -17,16 +18,17 @@ export class Order {
   price: number;
 
   @Column({
-    type: 'varchar',
-    length: 20,
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.PENDING,
   })
-  status: string;
+  status: OrderStatus;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', onUpdate: 'CURRENT_TIMESTAMP' })
-  upadated_at: Date;
+  @UpdateDateColumn({ nullable: true })
+  updated_at: Date;
 
   @OneToMany(() => OrderItem, (order_item) => order_item.order)
   order_items: OrderItem[];

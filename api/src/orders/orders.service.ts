@@ -12,8 +12,14 @@ export class OrdersService {
   ) {}
 
   async createNewOrder(createOrderDto: CreateOrderDto) {
+    const orderCreateData = {
+      price: createOrderDto.price,
+      status: createOrderDto.status,
+    };
+
     const order = {
-      ...createOrderDto,
+      ...orderCreateData,
+      created_at: new Date(),
       updated_at: new Date(),
     };
 

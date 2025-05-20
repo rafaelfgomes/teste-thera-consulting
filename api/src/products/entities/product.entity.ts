@@ -29,7 +29,7 @@ export class Product {
   @Column({ type: 'boolean', default: true })
   active: boolean;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   created_at: Date;
 
   @ManyToOne(() => Category, (category) => category.products)
