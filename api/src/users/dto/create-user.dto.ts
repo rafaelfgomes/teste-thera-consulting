@@ -15,7 +15,7 @@ export class CreateUserDto {
   password: string;
 
   @IsDateString()
-  createdAt: Date;
+  created_at: Date;
 
   @IsBoolean()
   @Transform(({ value }) => Boolean(value))

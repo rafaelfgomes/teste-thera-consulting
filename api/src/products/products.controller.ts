@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -44,8 +43,8 @@ export class ProductsController {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
-  @Delete(':id')
-  deleteProduct(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.deleteProduct(id);
+  @Patch('/disable/:id')
+  disableProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.disableProduct(id);
   }
 }

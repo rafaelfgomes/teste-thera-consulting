@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString({
@@ -9,4 +10,8 @@ export class CreateCategoryDto {
   })
   @MaxLength(80)
   name: string;
+
+  @IsBoolean()
+  @Transform(({ value }) => Boolean(value))
+  active: boolean;
 }

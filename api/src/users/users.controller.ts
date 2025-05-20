@@ -26,10 +26,15 @@ export class UsersController {
   }
 
   @Patch(':id')
-  disableUser(
+  updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.disableUser(id, updateUserDto);
+    return this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Patch('/disable/:id')
+  disableUser(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.disableUser(id);
   }
 }

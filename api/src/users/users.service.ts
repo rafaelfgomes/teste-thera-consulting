@@ -26,13 +26,33 @@ export class UsersService {
     return user;
   }
 
-  async disableUser(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+    const userUpdateData = {
+      name: updateUserDto?.name,
+      email: updateUserDto?.email,
+      password: updateUserDto?.password,
+    };
+
+    const user = await this.userRepository.preload({ id, ...userUpdateData });
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    return this.userRepository.update(user, updateUserDto);
+    return this.userRepository.save(user);
+  }
+
+  async disableUser(id: number) {
+    const userDisableData = {
+      active: false,
+    };
+
+    const user = await this.userRepository.preload({ id, ...userDisableData });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return this.userRepository.save(user);
   }
 }

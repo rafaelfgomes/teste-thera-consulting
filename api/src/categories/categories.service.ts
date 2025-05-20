@@ -42,17 +42,37 @@ export class CategoriesService {
     return this.categoryRepository.save(createCategoryDto);
   }
 
-  updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryRepository.update(id, updateCategoryDto);
-  }
+  async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const categoryUpdateData = {
+      name: updateCategoryDto?.name,
+    };
 
-  async removeCategory(id: number) {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+    const category = await this.categoryRepository.preload({
+      id,
+      ...categoryUpdateData,
+    });
 
     if (!category) {
       throw new NotFoundException('Categoria não encontrada');
     }
 
-    return this.categoryRepository.delete(category);
+    return this.categoryRepository.save(category);
+  }
+
+  async disableCategory(id: number) {
+    const categoryDisableData = {
+      active: false,
+    };
+
+    const category = await this.categoryRepository.preload({
+      id,
+      ...categoryDisableData,
+    });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    return this.categoryRepository.save(category);
   }
 }

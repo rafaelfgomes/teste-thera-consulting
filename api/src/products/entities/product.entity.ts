@@ -26,7 +26,7 @@ export class Product {
   @Column({ type: 'int' })
   quantity: number;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: true })
   active: boolean;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

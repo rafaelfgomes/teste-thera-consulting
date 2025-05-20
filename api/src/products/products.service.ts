@@ -41,22 +41,40 @@ export class ProductsService {
   }
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto) {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const productUpdateData = {
+      name: updateProductDto?.name,
+      description: updateProductDto?.description,
+      price: updateProductDto?.price,
+      active: updateProductDto?.active,
+      category_id: updateProductDto?.category_id,
+    };
+
+    const product = await this.productRepository.preload({
+      id,
+      ...productUpdateData,
+    });
 
     if (!product) {
       throw new NotFoundException('Produto não encontrado');
     }
 
-    return this.productRepository.update(product, updateProductDto);
+    return this.productRepository.save(product);
   }
 
-  async deleteProduct(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
+  async disableProduct(id: number) {
+    const productDisableData = {
+      active: false,
+    };
+
+    const product = await this.productRepository.preload({
+      id,
+      ...productDisableData,
+    });
 
     if (!product) {
       throw new NotFoundException('Produto não encontrado');
     }
 
-    return this.productRepository.delete(product);
+    return this.productRepository.save(product);
   }
 }

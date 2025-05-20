@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   ParseIntPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -44,8 +43,8 @@ export class CategoriesController {
     return this.categoriesService.updateCategory(id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  removeCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.removeCategory(id);
+  @Patch('/disable/:id')
+  disableCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.disableCategory(id);
   }
 }

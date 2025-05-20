@@ -11,8 +11,13 @@ export class OrdersService {
     private readonly orderRepository: Repository<Order>,
   ) {}
 
-  createNewOrder(createOrderDto: CreateOrderDto) {
-    return this.orderRepository.save(createOrderDto);
+  async createNewOrder(createOrderDto: CreateOrderDto) {
+    const order = {
+      ...createOrderDto,
+      updated_at: new Date(),
+    };
+
+    return this.orderRepository.save(order);
   }
 
   getAllOrders() {
