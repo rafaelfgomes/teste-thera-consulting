@@ -6,6 +6,14 @@ export async function seedCategories(dataSource: DataSource) {
 
   const categoryRepository = dataSource.getRepository(Category);
 
+  const count = await categoryRepository.count();
+
+  if (count > 0) {
+    console.log('Categorias já existem, pulando o seeder.');
+
+    return;
+  }
+
   const categories = [
     { name: 'Eletrônicos' },
     { name: 'Livros' },

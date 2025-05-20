@@ -35,7 +35,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - NEXT_PUBLIC_API_URL=http://127.0.0.1:${BACKEND_PORT:-8080}/api
-      - APP_ENV=${APP_ENV:-development}
+      - NODE_ENV=${APP_ENV:-development}
     depends_on:
       - "db"
     networks:
@@ -59,7 +59,7 @@ services:
       - DB_NAME=${DB_NAME}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-      - APP_ENV=${APP_ENV:-development}
+      - NODE_ENV=${APP_ENV:-development}
     depends_on:
       - "node"
     networks:
@@ -77,7 +77,7 @@ services:
         TIMEZONE: ${TIMEZONE}
     environment:
       - NEXT_PUBLIC_API_URL=http://127.0.0.1:${BACKEND_PORT:-8080}/api
-      - APP_ENV=${APP_ENV:-development}
+      - NODE_ENV=${APP_ENV:-development}
     depends_on:
       - "api"
     networks:
@@ -95,7 +95,7 @@ services:
         TIMEZONE: ${TIMEZONE}
     environment:
       - NEXT_PUBLIC_API_URL=http://127.0.0.1:${BACKEND_PORT:-8080}/api
-      - APP_ENV=${APP_ENV:-development}
+      - NODE_ENV=${APP_ENV:-development}
     depends_on:
       - "api"
     networks:

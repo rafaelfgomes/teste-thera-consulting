@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -27,6 +28,9 @@ export class Product {
 
   @Column({ type: 'boolean' })
   active: boolean;
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;

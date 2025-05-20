@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,19 +20,37 @@ export class ProductsService {
     return this.productRepository.find();
   }
 
-  getProductById(id: number) {
-    return this.productRepository.findOne({ where: { id } });
+  async getProductById(id: number) {
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+
+    return product;
   }
 
-  getProductByName(name: string) {
-    return this.productRepository.findOne({ where: { name } });
+  async getProductByName(name: string) {
+    const product = await this.productRepository.findOne({ where: { name } });
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+
+    return product;
   }
 
   updateProduct(id: number, updateProductDto: UpdateProductDto) {
     return this.productRepository.update(id, updateProductDto);
   }
 
-  deleteProduct(id: number) {
-    return this.productRepository.delete(id);
+  async deleteProduct(id: number) {
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+
+    return this.productRepository.delete(product);
   }
 }

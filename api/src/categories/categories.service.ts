@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -12,29 +12,47 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  createNewCategory(createCategoryDto: CreateCategoryDto) {
-    return this.categoryRepository.save(createCategoryDto);
-  }
-
   getAllCategories() {
     return this.categoryRepository.find();
   }
 
-  getCategoryById(id: number) {
-    return this.categoryRepository.findOne({ where: { id } });
+  async getCategoryById(id: number) {
+    const category = await this.categoryRepository.findOne({ where: { id } });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    return category;
   }
 
-  getCategoryByName(name: string) {
-    return this.categoryRepository.findOne({
+  async getCategoryByName(name: string) {
+    const category = await this.categoryRepository.findOne({
       where: { name: ILike(`%${name}%`) },
     });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    return category;
+  }
+
+  createNewCategory(createCategoryDto: CreateCategoryDto) {
+    return this.categoryRepository.save(createCategoryDto);
   }
 
   updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
     return this.categoryRepository.update(id, updateCategoryDto);
   }
 
-  removeCategory(id: number) {
-    return this.categoryRepository.delete(id);
+  async removeCategory(id: number) {
+    const category = await this.categoryRepository.findOne({ where: { id } });
+
+    if (!category) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+
+    return this.categoryRepository.delete(category);
   }
 }
