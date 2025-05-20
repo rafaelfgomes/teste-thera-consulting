@@ -6,6 +6,7 @@ import {
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { OrderItemsService } from './order-items.service';
 import { CreateOrderItemDto } from './dto/create-order-item.dto';
@@ -28,8 +29,10 @@ export class OrderItemsController {
   }
 
   @Get(':id')
-  async getOrderItemById(@Param('id') id: string): Promise<OrderItemDto> {
-    const orderItem = await this.orderItemsService.getOrderItemById(+id);
+  async getOrderItemById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<OrderItemDto> {
+    const orderItem = await this.orderItemsService.getOrderItemById(id);
     return plainToClass(OrderItemDto, orderItem, {
       excludeExtraneousValues: true,
     });

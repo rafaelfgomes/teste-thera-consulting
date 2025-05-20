@@ -40,8 +40,14 @@ export class ProductsService {
     return product;
   }
 
-  updateProduct(id: number, updateProductDto: UpdateProductDto) {
-    return this.productRepository.update(id, updateProductDto);
+  async updateProduct(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+
+    return this.productRepository.update(product, updateProductDto);
   }
 
   async deleteProduct(id: number) {

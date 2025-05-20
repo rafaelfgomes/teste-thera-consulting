@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 
@@ -17,7 +24,7 @@ export class OrdersController {
   }
 
   @Get(':id')
-  getOrderById(@Param('id') id: string) {
-    return this.ordersService.getOrderById(+id);
+  getOrderById(@Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.getOrderById(id);
   }
 }
