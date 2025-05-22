@@ -12,8 +12,20 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  createNewUser(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+  async createNewUser(createUserDto: CreateUserDto) {
+    const userCreateData = {
+      name: createUserDto.name,
+      email: createUserDto.email,
+      password: createUserDto.password,
+      created_at: new Date(),
+      active: true,
+    };
+
+    const user = this.userRepository.create(userCreateData);
+
+    await this.userRepository.save(user);
+
+    return user;
   }
 
   async findByEmail(email: string) {
@@ -29,7 +41,6 @@ export class UsersService {
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
     const userUpdateData = {
       name: updateUserDto?.name,
-      email: updateUserDto?.email,
       password: updateUserDto?.password,
     };
 

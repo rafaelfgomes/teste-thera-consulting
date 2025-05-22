@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -32,7 +33,8 @@ export class Product {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Category, (category) => category.products)
+  @ManyToOne(() => Category, (category) => category.products, { eager: true })
+  @JoinColumn({ name: 'category_id' })
   category: Category;
 
   @OneToMany(() => OrderItem, (order_item) => order_item.product)

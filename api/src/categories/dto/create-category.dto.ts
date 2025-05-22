@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString({
@@ -11,7 +17,10 @@ export class CreateCategoryDto {
   @MaxLength(80)
   name: string;
 
+  @IsDateString()
+  created_at: Date = new Date();
+
   @IsBoolean()
   @Transform(({ value }) => Boolean(value))
-  active: boolean;
+  active: boolean = true;
 }

@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { BaseResponse } from '@/common/dto/base-response.dto';
+import { CategoryResponseDto } from './dto/category-response.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -12,34 +14,50 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  getAllCategories() {
-    return this.categoryRepository.find();
+  async getAllCategories(): Promise<BaseResponse<CategoryResponseDto[]>> {
+    const categories = await this.categoryRepository.find({
+      where: { active: true },
+    });
+
+    if (!categories) {
+      return new BaseResponse(
+        [],
+        'Nenhuma categoria encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const responseData = categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+    }));
+
+    return new BaseResponse(responseData);
   }
 
   async getCategoryById(id: number) {
-    const category = await this.categoryRepository.findOne({ where: { id } });
-
-    if (!category) {
-      throw new NotFoundException('Categoria não encontrada');
-    }
-
-    return category;
-  }
-
-  async getCategoryByName(name: string) {
     const category = await this.categoryRepository.findOne({
-      where: { name: ILike(`%${name}%`) },
+      where: { id, active: true },
     });
 
     if (!category) {
       throw new NotFoundException('Categoria não encontrada');
     }
 
-    return category;
+    const responseData = {
+      id: category.id,
+      name: category.name,
+    };
+
+    return new BaseResponse(responseData);
   }
 
   createNewCategory(createCategoryDto: CreateCategoryDto) {
-    return this.categoryRepository.save(createCategoryDto);
+    const categoryCreateData = {
+      name: createCategoryDto.name,
+    };
+
+    return this.categoryRepository.save(categoryCreateData);
   }
 
   async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {

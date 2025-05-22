@@ -28,11 +28,11 @@ export class CreateOrderItemDto {
   order_id: number;
 
   @IsDateString()
-  created_at: Date;
+  created_at: Date = new Date();
 
   @IsOptional()
   @IsDateString()
-  updated_at: Date;
+  updated_at?: Date;
 
   @Transform(
     ({ obj }: { obj: CreateOrderItemDto }) =>

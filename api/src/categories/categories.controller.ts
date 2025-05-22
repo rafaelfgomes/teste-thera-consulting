@@ -30,11 +30,6 @@ export class CategoriesController {
     return this.categoriesService.getCategoryById(id);
   }
 
-  @Get('/by-name/:name')
-  getCategoryByName(@Param('name') name: string) {
-    return this.categoriesService.getCategoryByName(name);
-  }
-
   @Patch(':id')
   updateCategory(
     @Param('id', ParseIntPipe) id: number,

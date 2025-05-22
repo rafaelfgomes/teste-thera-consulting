@@ -30,11 +30,6 @@ export class ProductsController {
     return this.productsService.getProductById(id);
   }
 
-  @Get('/by-name/:name')
-  getProductByName(@Param('name') name: string) {
-    return this.productsService.getProductByName(name);
-  }
-
   @Patch(':id')
   updateProduct(
     @Param('id', ParseIntPipe) id: number,

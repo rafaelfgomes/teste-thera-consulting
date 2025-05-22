@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,8 +28,10 @@ export class OrderItem {
   updated_at: Date;
 
   @ManyToOne(() => Order, (order) => order.order_items)
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 
   @ManyToOne(() => Product)
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 }

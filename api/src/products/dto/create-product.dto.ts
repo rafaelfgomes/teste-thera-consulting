@@ -1,9 +1,9 @@
-import { Transform } from 'class-transformer';
 import {
   IsBoolean,
-  IsDecimal,
-  IsInt,
+  IsDate,
   IsNotEmpty,
+  IsNumber,
+  IsPositive,
   IsString,
   MaxLength,
   Min,
@@ -19,20 +19,21 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-  @IsDecimal({ decimal_digits: '2' })
-  @Transform(({ value }) => Number(value))
+  @IsNumber()
   @Min(0)
   price: number;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
   quantity: number;
 
-  @IsInt()
-  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   category_id: number;
 
   @IsBoolean()
-  @Transform(({ value }) => Boolean(value))
-  active: boolean;
+  active: boolean = true;
+
+  @IsDate()
+  created_at: Date = new Date();
 }

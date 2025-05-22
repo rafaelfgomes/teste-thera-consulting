@@ -1,4 +1,4 @@
-import { OrderStatus } from '../../enums/orderstatus';
+import { OrderStatus } from '../../enums/order-status';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -26,17 +26,17 @@ export class CreateOrderDto {
   price: number;
 
   @IsEnum(['pending', 'completed', 'canceled'])
-  status: OrderStatus;
+  status: OrderStatus = OrderStatus.PENDING;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
-  items: OrderItemDto[];
+  order_items: OrderItemDto[];
 
   @IsDateString()
-  created_at: Date;
+  created_at: Date = new Date();
 
   @IsOptional()
   @IsDateString()
-  updated_at: Date;
+  updated_at?: Date;
 }

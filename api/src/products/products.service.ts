@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { ProductResponseDto } from './dto/product-response.dto';
+import { BaseResponse } from '@/common/dto/base-response.dto';
 
 @Injectable()
 export class ProductsService {
@@ -12,32 +14,76 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  createNewProduct(createProductDto: CreateProductDto) {
-    return this.productRepository.save(createProductDto);
+  async createNewProduct(createProductDto: CreateProductDto) {
+    const productCreateData = {
+      ...createProductDto,
+      name: createProductDto.name,
+      description: createProductDto.description,
+      price: createProductDto.price,
+      quantity: createProductDto.quantity,
+      active: createProductDto?.active,
+      category: { id: createProductDto.category_id },
+    };
+
+    return this.productRepository.save(productCreateData);
   }
 
-  getAllProducts() {
-    return this.productRepository.find();
+  async getAllProducts(): Promise<BaseResponse<ProductResponseDto[]>> {
+    const products = await this.productRepository.find({
+      where: { active: true },
+      relations: ['category'],
+    });
+
+    if (!products) {
+      return new BaseResponse(
+        [],
+        'Nenhum produto encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const productResponseData = products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      active: product.active,
+      category: {
+        name: product.category.name,
+      },
+    }));
+
+    return new BaseResponse(productResponseData);
   }
 
   async getProductById(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({
+      where: { id, active: true },
+      relations: ['category'],
+    });
 
     if (!product) {
-      throw new NotFoundException('Produto não encontrado');
+      return new BaseResponse(
+        [],
+        'Produto não encontrado',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return product;
-  }
+    const responseData = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      active: product.active,
+      category: {
+        name: product.category.name,
+      },
+    };
 
-  async getProductByName(name: string) {
-    const product = await this.productRepository.findOne({ where: { name } });
-
-    if (!product) {
-      throw new NotFoundException('Produto não encontrado');
-    }
-
-    return product;
+    return new BaseResponse(responseData);
   }
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto) {
@@ -45,7 +91,6 @@ export class ProductsService {
       name: updateProductDto?.name,
       description: updateProductDto?.description,
       price: updateProductDto?.price,
-      active: updateProductDto?.active,
       category_id: updateProductDto?.category_id,
     };
 
@@ -55,10 +100,28 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException('Produto não encontrado');
+      return new BaseResponse(
+        [],
+        'Produto não encontrado',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return this.productRepository.save(product);
+    await this.productRepository.save(product);
+
+    const responseData = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      active: product.active,
+      category: {
+        name: product.category.name,
+      },
+    };
+
+    return new BaseResponse(responseData);
   }
 
   async disableProduct(id: number) {
@@ -72,9 +135,27 @@ export class ProductsService {
     });
 
     if (!product) {
-      throw new NotFoundException('Produto não encontrado');
+      return new BaseResponse(
+        [],
+        'Produto não encontrado',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    return this.productRepository.save(product);
+    await this.productRepository.save(product);
+
+    const responseData = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      active: product.active,
+      category: {
+        name: product.category.name,
+      },
+    };
+
+    return new BaseResponse(responseData);
   }
 }

@@ -13,17 +13,12 @@ export class OrdersService {
 
   async createNewOrder(createOrderDto: CreateOrderDto) {
     const orderCreateData = {
+      ...createOrderDto,
       price: createOrderDto.price,
       status: createOrderDto.status,
     };
 
-    const order = {
-      ...orderCreateData,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-
-    return this.orderRepository.save(order);
+    return this.orderRepository.save(orderCreateData);
   }
 
   getAllOrders() {
